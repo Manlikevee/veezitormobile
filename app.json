@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "veezitormobile",
+    "slug": "veezitormobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.veetech.veezitormobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      ["expo-camera",
+      {
+        "cameraPermission": "Allow Veezitor to access your camera",
+        "microphonePermission": "Allow Veezitor to access your microphone",
+        "recordAudioAndroid": true
+      }]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "487a5dfa-ad05-48fe-9f1f-982b64a98387"
+      }
+    }
+  }
+}
