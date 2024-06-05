@@ -6,10 +6,10 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import {VeeContextProvider} from '@/components/Veecontext'
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-gesture-handler';
+import * as SecureStore from 'expo-secure-store';
+import { Appearance, ColorSchemeName } from "react-native";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -35,10 +35,33 @@ export default function RootLayout() {
     
     
   });
-
+  
+  // const getMyTheme = async (): Promise<void> => {
+  //   try {
+  //     let customTheme = await SecureStore.getItemAsync('appearance');
+  //     if (customTheme) {
+  //       Appearance.setColorScheme(customTheme === 'dark' ? 'dark' : 'light');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error retrieving theme:', error);
+  //   }
+  // };
+  const getMyTheme = async (): Promise<void> => {
+    try {
+      let customTheme = await SecureStore.getItemAsync('appearance');
+      if (customTheme) {
+        const theme: ColorSchemeName = customTheme === 'dark' ? 'dark' : 'light';
+        Appearance.setColorScheme(theme);
+      }
+    } catch (error) {
+      console.error('Error retrieving theme:', error);
+    }
+  };
   useEffect(() => {
     if (loaded) {
+      getMyTheme(); 
       SplashScreen.hideAsync();
+   
     }
   }, [loaded]);
 
@@ -51,11 +74,12 @@ export default function RootLayout() {
           <BottomSheetModalProvider>
 <VeeContextProvider>
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack initialRouteName='onboarding/index'>
-      <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)"  options={{ headerShown: false }} />
-   
+      <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)"  options={{ headerShown: false }} />
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+
+
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

@@ -2,7 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
-
+import { Appearance } from "react-native";
+import { ToastAndroid } from "react-native";
 import { router } from 'expo-router';
 // Create the context
 export const VeeContext = createContext();
@@ -41,9 +42,28 @@ export const VeeContextProvider = ({ children }) => {
   const [isvisitorbaropen, setIsVisitorBarOpen] = useState(false);
   const [sideloading, setSideloading] = useState(true);
   const [visitationdata, setVisitationdata] = useState([]);
-
+  const [appearanceMode, setAppearanceMode] = useState("light");
   const [loadingaccept, setLoadingAccept] = useState(false);
   const [datatoken, setDatatoken] = useState(null);
+
+
+  const toggleAppearanceMode = async () => {
+    if (appearanceMode === "light") {
+      Appearance.setColorScheme("dark");
+      setAppearanceMode("dark");
+      await SecureStore.setItemAsync('appearance', 'dark');
+    } else if (appearanceMode === "dark") {
+      Appearance.setColorScheme("light");
+      setAppearanceMode("light");
+      await SecureStore.setItemAsync('appearance', 'light');
+    } else {
+      // If appearanceMode is null or undefined (i.e., automatic), you can set it to a default value
+      Appearance.setColorScheme("light"); // Or any other default value
+      setAppearanceMode("light");
+      await SecureStore.setItemAsync('appearance', 'light');
+    }
+  };
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(prevState => !prevState);
@@ -123,6 +143,7 @@ export const VeeContextProvider = ({ children }) => {
   async function acceptVisitor(ref) {
     if (ref !== 'close') {
       setLoadingAccept(true);
+      console.log('trying')
       try {
         const payload = { post_id: ref };
         const endpoint = '/acceptvisitor';
@@ -133,6 +154,7 @@ export const VeeContextProvider = ({ children }) => {
           console.log('Visitation details updated successfully');
           setVisitationdata(response.data?.visitorsdata);
           setVisitors(response.data?.visitorserializer);
+          ToastAndroid.show( "Visitation details updated successfully", ToastAndroid.SHORT);
         }
         setLoadingAccept(false);
         toggleVisitorBar('close');
@@ -150,10 +172,16 @@ export const VeeContextProvider = ({ children }) => {
     }
   };
 
+  const  setmytheme = async () => {
+    let customtheme = await SecureStore.setItemAsync('appearance', 'dark');
+    if (customtheme){
+      setAppearanceMode(customtheme)
+    }
+  }  
   async function checkUsername() {
     let accessToken = await SecureStore.getItemAsync('access_token');
     if (accessToken) {
-      console.log(accessToken)
+
       const decodedDetails = jwtDecode(accessToken).username;
       const decodedId = jwtDecode(accessToken).user_id;
       setUsername(decodedDetails);
@@ -497,9 +525,9 @@ export const VeeContextProvider = ({ children }) => {
   // Fetch data on component mount
   useEffect(() => {
     checkUsername();
-fetchuserdata();
+// fetchuserdata();
 //     fetchPlans();
-    fetchCompanySetup();
+    // fetchCompanySetup();
 
   }, []);
 
@@ -533,6 +561,7 @@ fetchuserdata();
         pendingApproval,
         setPendingApproval,
         reshedule,
+        appearanceMode,
         setReshedule,
         inProgress,
         setInProgress,
@@ -567,7 +596,10 @@ fetchuserdata();
         fetchAwaiting,
         datatoken,
         setDatatoken,
-        timeAgo
+        timeAgo,
+        toggleAppearanceMode,
+        setmytheme,
+        loadingaccept
       }}
     >
       {children}

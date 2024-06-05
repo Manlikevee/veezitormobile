@@ -55,7 +55,7 @@ export default function HomeScreen() {
     loadingaccept,
     username,
     fetchvisitors,
-    acceptvisitor,
+    acceptVisitor,
     visitors,
     awaiting,
     pendingApproval,
@@ -140,6 +140,7 @@ export default function HomeScreen() {
                   toggleVisitorBar={toggleVisitorBar}
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
+                  acceptvisitor={acceptVisitor}
                 />
               )}
               {selectedOption == "Inprogress" && (
@@ -149,6 +150,7 @@ export default function HomeScreen() {
                   toggleVisitorBar={toggleVisitorBar}
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
+                  acceptvisitor={acceptVisitor}
                 />
               )}
               {selectedOption == "Pending" && (
@@ -158,6 +160,7 @@ export default function HomeScreen() {
                   toggleVisitorBar={toggleVisitorBar}
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
+                  acceptvisitor={acceptVisitor}
                 />
               )}
             </>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View,TouchableOpacity, FlatList ,  Image,Dimensions, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TextInput, View,TouchableOpacity, FlatList ,  Image,Dimensions, ActivityIndicator, Pressable } from 'react-native'
 import { ThemedView } from '@/components/ThemedView';
 import { EvilIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { ThemedText } from './ThemedText';
@@ -19,7 +19,7 @@ import {
   } from "@gorhom/bottom-sheet";
 
 
-const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadingaccept}) => {
+const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadingaccept, acceptvisitor}) => {
     const [isOpen, setOpen] = useState(false);
     const bottomSheetModalRef = useRef(null);
     const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -34,57 +34,12 @@ const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadinga
         }, 400);
       }
 
-      const renderFooter = useCallback(
-        props => (
-          <BottomSheetFooter {...props} >
-<ThemedView style={{ paddingHorizontal: 20, paddingVertical: 6 }}>
-  {visitationdata ? (
-    <>
-      {visitationdata?.stage_2 && !visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-        <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
-          <MaterialCommunityIcons name='qrcode-scan' size={14} style={styles.footerIcon} />
-          <ThemedText lightColor='white' style={styles.footerText}>
-            Assign Qr Tag 
-          </ThemedText>
-        </ThemedView>
-      ) : visitationdata?.stage_2 && visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-        <ThemedView lightColor='#1D61E7' style={styles.footerContainer}>
-          <MaterialCommunityIcons name='logout' size={14} style={styles.footerIcon} />
-          <ThemedText lightColor='white' style={styles.footerText}>
-            Sign Out
-          </ThemedText>
-        </ThemedView>
-      ) : (
-        <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
-          <Octicons name='verified' size={14} style={styles.footerIcon} />
-          <ThemedText lightColor='white' style={styles.footerText}>
-            Approve
-          </ThemedText>
-        </ThemedView>
-      )}
-    </>
-  ) : loadingaccept ? (
-    <ThemedView lightColor='#000' style={styles.footerContainer}>
-      <ActivityIndicator size="small" color="#fff" />
-    </ThemedView>
-  ) : null}
-</ThemedView>
-      
-          </BottomSheetFooter>
-        ),
-        []
-      );
-      const renderBackdrop = useCallback(
-        (props) => (
-          <BottomSheetBackdrop
-            {...props}
-            disappearsOnIndex={1}
-            appearsOnIndex={1}
-            backgroundColor="rgba(0, 0, 0, 0.5)" 
-          />
-        ),
-        []
-      );
+async function myacceptvisit(id){
+  if(id){
+    await  acceptvisitor(id)
+  }
+} 
+
   
     const colorScheme = useColorScheme();
 
@@ -190,12 +145,15 @@ const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadinga
               {visitationdata.stage_1 ? (
                 <>
                   {visitationdata?.stage_2 && !visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-                    <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
+            
+              <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
                       <MaterialCommunityIcons name='qrcode-scan' size={14} style={styles.footerIcon} />
                       <ThemedText lightColor='white' style={styles.footerText}>
                         Assign Qr Tag 
                       </ThemedText>
                     </ThemedView>
+
+    
                   ) : visitationdata?.stage_2 && visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
                     <ThemedView lightColor='#1D61E7' style={styles.footerContainer}>
                       <MaterialCommunityIcons name='logout' size={14} style={styles.footerIcon} />
@@ -204,19 +162,32 @@ const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadinga
                       </ThemedText>
                     </ThemedView>
                   ) : (
+                    <Pressable onPress={() => myacceptvisit(visitationdata?.ref)}>
                     <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
                       <Octicons name='verified' size={14} style={styles.footerIcon} />
                       <ThemedText lightColor='white' style={styles.footerText}>
                         Approve
                       </ThemedText>
                     </ThemedView>
+                    </Pressable>
                   )}
                 </>
               ) : loadingaccept ? (
                 <ThemedView lightColor='#000' style={styles.footerContainer}>
                   <ActivityIndicator size="small" color="#fff" />
                 </ThemedView>
-              ) : null}
+              ) : (
+                <TouchableOpacity
+                style={{ marginTop:0, padding: 14, backgroundColor: "#1E232C", borderRadius: 7, alignItems:'center', gap:4,
+              flexDirection:'row', justifyContent:'center' }}
+             
+              >
+                 <ActivityIndicator size="small" color="#fff" />
+                <Text style={{ color: "white", textAlign: "center" }}>
+                Loading...
+                </Text>
+              </TouchableOpacity>
+              )}
             </ThemedView>
                   
                       </BottomSheetFooter>

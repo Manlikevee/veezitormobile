@@ -16,6 +16,9 @@ export default function TabLayout() {
   const tabhead = () => {
    
   
+
+
+    
     return {
       headerLeft: () => (
         <Link href="/onboarding" asChild>
@@ -125,7 +128,7 @@ export default function TabLayout() {
             // <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
             <MaterialCommunityIcons color={color} name={focused ? 'account' : 'account-outline'}  size={25}  />
           ),
-          tabhead
+          ...tabhead()
         }}
       />
     </Tabs>

@@ -86,7 +86,7 @@ const Page = () => {
         setIsloading(false);
 
         setTimeout(() => {
-          navigation.replace("/(tabs)/product");
+          navigation.replace("/(tabs)");
         }, 1500);
       } catch (error) {
         // Failed login
