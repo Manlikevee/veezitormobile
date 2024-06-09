@@ -19,7 +19,7 @@ import {
   } from "@gorhom/bottom-sheet";
 
 
-const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadingaccept, acceptvisitor}) => {
+const Employeetable = ({data }) => {
     const [isOpen, setOpen] = useState(false);
     const bottomSheetModalRef = useRef(null);
     const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -28,36 +28,20 @@ const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadinga
   async  function handlePresentModal(id) {
     
         bottomSheetModalRef.current?.present();
-        console.log('loading accept is', loadingaccept)
-      const bsr =  await  toggleVisitorBar(id);
+      //   console.log('loading accept is', loadingaccept)
+      // const bsr =  await  toggleVisitorBar(id);
      
         setTimeout(() => {
             setOpen(true);
         }, 400);
       }
 
-async function myacceptvisit(id){
 
-  if(id){
-  
-    await  acceptvisitor(id)
- 
-  }
-} 
 
   
     const colorScheme = useColorScheme();
 
-    function formatDate(inputDate) {
-        const date = new Date(inputDate);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear()).slice(-2);
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-      
-        return `${day}/${month}/${year} ${hours}:${minutes}`;
-      }
+
   return (
 
         <ThemedView style={styles.mytable} lightColor='transparent' darkColor='transparent'>
@@ -93,7 +77,7 @@ async function myacceptvisit(id){
         {data.length >= 1 &&  (
                     data.map((info, index) => (       
                         <TouchableOpacity key={info.ref}
-                        onPress={() => handlePresentModal(info.ref)}
+                        // onPress={() => handlePresentModal(info.ref)}
                         >
                         <ThemedView
                          darkColor="#111111"
@@ -120,20 +104,20 @@ async function myacceptvisit(id){
                         </ThemedView>
                         <ThemedView  darkColor="#111111" style={{justifyContent:'space-between', flexDirection:'row'}}>
                             <ThemedText style={styles.placeholder}  lightColor='#000' >Phone Number</ThemedText>
-                            <ThemedText style={styles.actualtext}  lightColor='#000' >{info?.phonenumber}</ThemedText>
+                            <ThemedText style={styles.actualtext}  lightColor='#000' >{info?.phone_number}</ThemedText>
                         </ThemedView>
                         <ThemedView  darkColor="#111111" style={{justifyContent:'space-between', flexDirection:'row'}}>
-                            <ThemedText style={styles.placeholder}  lightColor='#000' >Visiting</ThemedText>
-                            <ThemedText style={styles.actualtext}  lightColor='#000' >{info?.staff_id?.first_name} {info?.staff_id?.last_name}</ThemedText>
+                            <ThemedText style={styles.placeholder}  lightColor='#000' >Gender</ThemedText>
+                            <ThemedText style={styles.actualtext}  lightColor='#000' >{info?.gender} </ThemedText>
                         </ThemedView>
                         
                         <ThemedView  darkColor="#111111" style={{justifyContent:'space-between', flexDirection:'row'}}>
-                            <ThemedText style={styles.placeholder} lightColor='#000' >Status</ThemedText>
-                            <ThemedText style={styles.actualtext} lightColor='#000' >Confirmation</ThemedText>
+                            <ThemedText style={styles.placeholder} lightColor='#000' >staff_id</ThemedText>
+                            <ThemedText style={styles.actualtext} lightColor='#000' >{info?.staff_id}</ThemedText>
                         </ThemedView>
                         <ThemedView  darkColor="#111111"  style={{justifyContent:'space-between', flexDirection:'row'}}>
-                            <ThemedText style={styles.placeholder} lightColor='#000' >Date</ThemedText>
-                            <ThemedText style={styles.actualtext} lightColor='#000' >{formatDate(info?.clock_in)}</ThemedText>
+                            <ThemedText style={styles.placeholder} lightColor='#000' >Company</ThemedText>
+                            <ThemedText style={styles.actualtext} lightColor='#000' >{info?.organization?.organization_name}</ThemedText>
                         </ThemedView>
                         
                         </ThemedView>
@@ -143,71 +127,23 @@ async function myacceptvisit(id){
         )}
 
 
-        <BottomSheetModal
+        {/* <BottomSheetModal
           ref={bottomSheetModalRef}
           index={2}
           handleIndicatorStyle={styles.handleIndicator}
           footerComponent={(props) => (
             <BottomSheetFooter {...props} >
-            <ThemedView style={{ paddingHorizontal: 20, paddingVertical: 6 }}>
 
-{/* {loadingaccept && (
-                <TouchableOpacity
+            <TouchableOpacity
                 style={{ marginTop:0, padding: 14, backgroundColor: "#1E232C", borderRadius: 7, alignItems:'center', gap:4,
               flexDirection:'row', justifyContent:'center' }}
              
               >
                  <ActivityIndicator size="small" color="#fff" />
                 <Text style={{ color: "white", textAlign: "center" }}>
-                Loadingsss...
+                Close
                 </Text>
               </TouchableOpacity>
-)} */}
-
-              {visitationdata.stage_1 && !loadingaccept  ? (
-                <>
-                  {visitationdata?.stage_2 && !visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-            
-              <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
-                      <MaterialCommunityIcons name='qrcode-scan' size={14} style={styles.footerIcon} />
-                      <ThemedText lightColor='white' style={styles.footerText}>
-                        Assign Qr Tag 
-                      </ThemedText>
-                    </ThemedView>
-
-    
-                  ) : visitationdata?.stage_2 && visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-                    <ThemedView lightColor='#1D61E7' style={styles.footerContainer}>
-                      <MaterialCommunityIcons name='logout' size={14} style={styles.footerIcon} />
-                      <ThemedText lightColor='white' style={styles.footerText}>
-                        Sign Out
-                      </ThemedText>
-                    </ThemedView>
-                  ) : (
-                    <Pressable onPress={() => myacceptvisit(visitationdata?.ref)}>
-                    <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
-                      <Octicons name='verified' size={14} style={styles.footerIcon} />
-                      <ThemedText lightColor='white' style={styles.footerText}>
-                        Approve
-                      </ThemedText>
-                    </ThemedView>
-                    </Pressable>
-                  )}
-                </>
-              ) : (
-           
-                <TouchableOpacity
-                style={{ marginTop:0, padding: 14, backgroundColor: "#1E232C", borderRadius: 7, alignItems:'center', gap:4,
-              flexDirection:'row', justifyContent:'center' }}
-             
-              >
-                 <ActivityIndicator size="small" color="#fff" />
-                <Text style={{ color: "white", textAlign: "center" }}>
-                Loading...
-                </Text>
-              </TouchableOpacity>
-              )}
-            </ThemedView>
                   
                       </BottomSheetFooter>
           )}
@@ -227,7 +163,7 @@ async function myacceptvisit(id){
          borderColor: Colors[colorScheme ?? 'light'].borderColor,  
         },
            ]}>
-          Visitor Details
+          Employee Details
             </ThemedText>
     
                 <BottomSheetScrollView contentContainerStyle={styles.contentContainer}>
@@ -380,14 +316,14 @@ async function myacceptvisit(id){
 
           </View>
        
-        </BottomSheetModal>
+        </BottomSheetModal> */}
         </ThemedView>
   
 
   )
 }
 
-export default Visitortable
+export default Employeetable
 
 const styles = StyleSheet.create({
     mytable:{

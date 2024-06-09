@@ -4,7 +4,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import bg from "../../assets/images/pm.jpg";
-import adap from  "../../assets/images/vector.png";
+import adap from  "../../assets/images/tparent.png";
 import { Redirect, router } from 'expo-router';
 const SCREEN_Height = Dimensions.get("window").height;
 const index = () => {
@@ -24,19 +24,19 @@ const index = () => {
       />
       </ThemedView>
       <ThemedView style={styles.bottomHalf}>
-      <View style={{flexDirection:'row', alignItems:'center', marginTop: 5, marginBottom:1, gap: 6, justifyContent:'center'}}>
+      <View style={{flexDirection:'row', alignItems:'center', marginTop: 5, marginBottom:10, gap: 6, justifyContent:'center'}}>
         <Image
           source={adap}
           style={{
-            width: 18,
-            height: 18,
+            width: 38,
+            height: 38,
             objectFit: "contain",
             alignSelf: "center",
    
           }}
         />
 
-        <Text style={{fontSize: 15, fontWeight: '900', color: 'black'}}>VEEZITOR</Text>
+        <ThemedText style={{fontSize: 19, fontWeight: '900', }}>VEEZITOR</ThemedText>
         </View>
       <TouchableOpacity onPress={handlelogin}
             style={{ marginTop:18, padding: 20, backgroundColor: "#1E232C", borderRadius: 7, borderWidth:1, borderColor:'#1E232C' }}
@@ -57,7 +57,7 @@ const index = () => {
           </TouchableOpacity>
 
           <View style={{marginTop: 10, backgroundColor:'transparent', }}>
-      <Text style={styles.mybtn}>By signing up, you agree to the Terms of Service and Data Processing Agreement</Text>
+      <ThemedText style={styles.mybtn}>By signing up, you agree to the Terms of Service and Data Processing Agreement</ThemedText>
       </View>
       </ThemedView>
     </ThemedView>
@@ -82,7 +82,7 @@ gap:10,
   },
   mybtn:{
     fontFamily: 'OutfitRegular',
-    color: '#1A1C1E',
+
     textAlign:'center'
       },
 })

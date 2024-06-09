@@ -23,6 +23,7 @@ export const VeeContextProvider = ({ children }) => {
   const [userid, setUserid] = useState("");
   const [employee, setEmployee] = useState([]);
   const [visitors, setVisitors] = useState([]);
+  const [authenticated, setAuthenticated] = useState(null);
   const [myqrcode, setQrcode] = useState([]);
   const [loadingmyqrcode, setLoadingqr] = useState(false);
   const [employeedataloaded, setemployeedataloaded] = useState(false);
@@ -75,6 +76,7 @@ export const VeeContextProvider = ({ children }) => {
 
     if (ref !== 'close') {
       setSideloading(true);
+      setLoadingAccept(true);
       setVisitationdata([]);
       try {
         const payload = { post_id: ref };
@@ -85,6 +87,7 @@ export const VeeContextProvider = ({ children }) => {
         
           setVisitationdata(response.data?.visitorsdata);
           console.log('Visitation details fetched successfully');
+          setLoadingAccept(false);
         }
       } catch (error) {
         if (error.response) {
@@ -96,6 +99,7 @@ export const VeeContextProvider = ({ children }) => {
         }
       } finally {
         setSideloading(false);
+        setLoadingAccept(false);
       }
     }
   };
@@ -141,8 +145,9 @@ export const VeeContextProvider = ({ children }) => {
 
 
   async function acceptVisitor(ref) {
-    if (ref !== 'close') {
       setLoadingAccept(true);
+    if (ref !== 'close') {
+    
       console.log('trying')
       try {
         const payload = { post_id: ref };
@@ -150,7 +155,7 @@ export const VeeContextProvider = ({ children }) => {
         const response = await axiosInstance.post(endpoint, payload);
 
         if (response.status === 200) {
-          console.log('response', response);
+          // console.log('response', response);
           console.log('Visitation details updated successfully');
           setVisitationdata(response.data?.visitorsdata);
           setVisitors(response.data?.visitorserializer);
@@ -191,6 +196,7 @@ export const VeeContextProvider = ({ children }) => {
   };
 
   const fetchEmployeeData = async () => {
+    setemployeedataloaded(false)
     let accessToken = await SecureStore.getItemAsync('access_token');
     if (accessToken) {
       try {
@@ -201,9 +207,11 @@ export const VeeContextProvider = ({ children }) => {
           setemployeedataloaded(true);
         } else {
           throw new Error("Network response was not ok");
+          setemployeedataloaded(true);
         }
       } catch (error) {
         console.error("An Error Occurred");
+        setemployeedataloaded(true);
       }
     }
   };
@@ -282,9 +290,9 @@ export const VeeContextProvider = ({ children }) => {
     try {
       setLoading(false);
       const response = await axiosInstance.get("/Companysetup");
-      console.log("it rannnn", response.data);
+      // console.log("it rannnn", response.data);
       setCompanySetup(response?.data?.company_obj);
-      console.log('response?.data?.company_obj', response?.data?.company_obj)
+      // console.log('response?.data?.company_obj', response?.data?.company_obj)
       await SecureStore.setItemAsync('userdata_token', response.data.token);
       setLoading(false);
       return response.data;
@@ -303,11 +311,12 @@ export const VeeContextProvider = ({ children }) => {
     let accessToken = await SecureStore.getItemAsync('access_token');
     if (accessToken) {
       try {
+        console.log('qrrrrrrr')
         const response = await axiosInstance.get("/userqrcards");
         if (response.status === 200) {
           setQrcode(response.data);
           setLoadingqr(true);
-          console.log(myqrcode);
+          console.log('myqrdone');
         } else {
           console.error("An Error Occurred");
         }
@@ -366,7 +375,7 @@ export const VeeContextProvider = ({ children }) => {
       try {
         const response = await axiosInstance.get("/visitor");
         if (response) {
-          console.log("Visitors", response.data);
+          console.log("Visitors");
           setVisitors(response.data);
           const myvisitors = response.data
           if(myvisitors){
@@ -414,7 +423,10 @@ export const VeeContextProvider = ({ children }) => {
       }
     }
   };
-
+  const checkAuth = async () => {
+    let accessToken = await SecureStore.getItemAsync('access_token');
+    setAuthenticated(true);
+  };
   const fetchPlans = async () => {
     let accessToken = await SecureStore.getItemAsync('access_token');
     if (accessToken) {
@@ -471,10 +483,11 @@ export const VeeContextProvider = ({ children }) => {
       try {
         setLoading(true);
         const response = await axiosInstance.get("/Dashboard");
-        console.log("it rannnn", response.data); // Assuming the response data contains useful 
+        console.log("it rannnn", ); // Assuming the response data contains useful 
         setEmployee(response?.data?.employee_data);
         setIntegrations(response?.data?.integration);
         setQrcode(response?.data?.qrcards);
+        // console.log('qrcards',response?.data?.qrcards)
         setVisitors(response?.data?.visitor_serializer);
         setLoading(false);
         setLoadingqr(true);
@@ -526,8 +539,8 @@ export const VeeContextProvider = ({ children }) => {
   useEffect(() => {
     checkUsername();
 // fetchuserdata();
-//     fetchPlans();
-    // fetchCompanySetup();
+// //     fetchPlans();
+//     fetchCompanySetup();
 
   }, []);
 
@@ -536,6 +549,7 @@ export const VeeContextProvider = ({ children }) => {
       value={{
         isOpen,
         setIsOpen,
+        axiosInstance,
         test,
         setTest,
         fetchCompanySetup,
@@ -547,6 +561,7 @@ export const VeeContextProvider = ({ children }) => {
         isOverlayOpen,
         setIsOverlayOpen,
         employee,
+        fetchEmployeeData,
         setEmployee,
         visitors,
         setVisitors,
@@ -595,11 +610,15 @@ export const VeeContextProvider = ({ children }) => {
         fetchInProgress,
         fetchAwaiting,
         datatoken,
+        fetchQrCode,
         setDatatoken,
         timeAgo,
         toggleAppearanceMode,
         setmytheme,
-        loadingaccept
+        loadingaccept,
+        authenticated,
+         setAuthenticated,
+         checkAuth
       }}
     >
       {children}

@@ -19,7 +19,7 @@ const SegmentedControl = React.memo(
     const { width: windowWidth } = useWindowDimensions();
     const colorScheme = useColorScheme();
     const internalPadding = 20;
-    const segmentedControlWidth = windowWidth - 40;
+    const segmentedControlWidth = windowWidth - 35;
 
     const itemWidth =
       (segmentedControlWidth - internalPadding) / options.length;
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   label: {
    
     fontSize: 16,
+      // fontFamily: 'SpaceGroteskRegular',
   },
 });
 

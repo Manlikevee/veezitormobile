@@ -1,21 +1,43 @@
 import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useState, useContext } from 'react'
+import React, { useCallback, useState, useContext, useEffect } from 'react'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { VeeContext } from '@/components/Veecontext';
+import { Redirect } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 const Dashlayout = ({children}) => {
   const [refreshing, setRefreshing] = useState(false);
-  
-  const {fetchVisitors} = useContext(VeeContext);
-  
+
+  const {fetchVisitors, fetchQrCode, fetchEmployeeData, fetchCompanySetup,
+    authenticated, setAuthenticated, checkAuth
+  } = useContext(VeeContext);
+ 
+  useEffect(() => {
+
+
+    checkAuth();
+  }, []);
   
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+  
+    fetchEmployeeData();
+    fetchQrCode();
     fetchVisitors();
+    fetchCompanySetup();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+  if (authenticated === null) {
+    // Render a loading indicator or nothing while checking authentication
+    return null;
+  }
+
+  if (!authenticated) {
+    return <Redirect href="/(auth)" />;
+  }
 
   return (
     <ThemedView style={styles.mylayout} lightColor="#f8f8f8" darkColor="#000" >

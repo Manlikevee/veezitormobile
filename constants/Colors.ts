@@ -19,14 +19,16 @@ export const Colors = {
     login: '#fff',
     micon: '#93312b',
     success: '#1BA0190D',
-    cardborderColor: '#f2f2f2',
+    cardborderColor: '#1f1f1f1d',
     tabtop: '#fff',
     curact: '#F5F7FA',
-    bgc: '#E57F0699'
+    bgc: '#E57F0699',
+    qrcolor: '#161616'
   },
   dark: {
     text: '#ECEDEE',
     background: '#151718',
+    qrcolor: '#dddddd',
     tint: tintColorDark,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',

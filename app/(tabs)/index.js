@@ -29,17 +29,17 @@ export default function HomeScreen() {
   const options = ["Pending", "Awaiting", "Inprogress"];
   const data = [
     {
-      icon: "adduser",
+      icon: "pending-actions",
       number: 0,
       name: "Pending Approval",
     },
     {
-      icon: "hourglass",
+      icon: "hourglass-bottom",
       number: 0,
       name: "Awaiting Confirmation",
     },
     {
-      icon: "calendar",
+      icon: "calendar-today",
       number: 0,
       name: "Reshedules",
     },
@@ -49,9 +49,6 @@ export default function HomeScreen() {
   const loaddata = ['Item 1', 'Item 2', 'Item 3'];
   const {
     visitordataloaded,
-    isOpen,
-    test,
-    setTest,
     loadingaccept,
     username,
     fetchvisitors,
@@ -311,7 +308,7 @@ const styles = StyleSheet.create({
   gtext: {
     textAlign: "start",
     fontSize: 18,
-    fontFamily: "OutfitRegular",
+  fontFamily: 'SpaceGroteskMedium',
   },
   small: {
     fontSize: 12,

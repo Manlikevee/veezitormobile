@@ -1,35 +1,47 @@
 import { Link, Tabs } from 'expo-router';
-import React from 'react';
-
+import React, { useState, useContext } from 'react';
+import * as SecureStore from 'expo-secure-store';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { Pressable, SafeAreaView, View } from 'react-native';
+import ModalPopup from '@/components/ModalPopup'
 import Avatar from '@/components/Avatar'
-
+import { VeeContext } from '@/components/Veecontext';
 export default function TabLayout() {
+  const {
+    authenticated, setAuthenticated, checkAuth
+  } = useContext(VeeContext);
+  const [modalVisible, setModalVisible] = useState(false);
 
-
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   const colorScheme = useColorScheme();
   const tabhead = () => {
    
   
-
+    const handleLogout = async () => {
+      await SecureStore.deleteItemAsync('access_token');
+      await SecureStore.deleteItemAsync('refresh_token');
+      await SecureStore.deleteItemAsync('userdata_token');
+      setAuthenticated(false);
+    };
 
     
     return {
       headerLeft: () => (
-        <Link href="/onboarding" asChild>
+      
           <Pressable>
             {({ pressed }) => <Avatar />}
           </Pressable>
-        </Link>
+ 
       ),
       headerRight: () => (
-        <Link href="/(auth)/login" asChild>
-          <Pressable>
+    
+          <Pressable onPress={handleLogout}>
             {({ pressed }) => (
               <SimpleLineIcons
                 name="logout"
@@ -39,7 +51,7 @@ export default function TabLayout() {
               />
             )}
           </Pressable>
-        </Link>
+   
       ),
       headerStyle: {
         borderBottomWidth: 1, // Border bottom width
@@ -49,7 +61,10 @@ export default function TabLayout() {
   };
   return (
     <SafeAreaView style={{flex: 1}}>
+      {modalVisible && (<ModalPopup visible={modalVisible} onClose={toggleModal} />)}
+            
     <Tabs
+    initialRouteName='analytics'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: true,
@@ -95,17 +110,21 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
+<Tabs.Screen
         name="explore"
         options={{
           title: '',
           tabBarIcon: ({ color, focused }) => (
-            // <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-            <View style={{paddingHorizontal: 10, paddingVertical:10, alignItems:'center', borderRadius:10, justifyContent:'center', backgroundColor:'#F3F3F3'}}>
-         <MaterialCommunityIcons color={color} name={focused ? 'qrcode' : 'qrcode-scan'}  size={25}  style={{marginTop: -3}} />
+            <View style={{paddingHorizontal: 10, paddingVertical: 10, alignItems:'center', borderRadius: 10, justifyContent: 'center', backgroundColor: '#F3F3F3'}}>
+              <MaterialCommunityIcons color={color} name={focused ? 'qrcode' : 'qrcode-scan'} size={25} style={{ marginTop: -3 }} />
             </View>
-   
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            e.preventDefault();
+            toggleModal();
+          },
         }}
       />
 
@@ -117,6 +136,7 @@ export default function TabLayout() {
             // <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
             <MaterialCommunityIcons color={color} name={focused ? 'chart-donut-variant' : 'chart-donut'}  size={25}  />
           ),
+          ...tabhead()
         }}
       />
 

@@ -28,14 +28,16 @@ import { StatusBar } from "react-native";
 import { Redirect } from "expo-router";
 import fb from  "../../assets/images/fb.png";
 import google from  "../../assets/images/google.png";
-import adap from  "../../assets/images/vector.png";
+import adap from  "../../assets/images/tparent.png";
+import { ThemedText } from "../../components/ThemedText";
+import { ThemedView } from "../../components/ThemedView";
 const Page = () => {
   const url = "https://veezitorbackend.vercel.app/token/";
   const colorScheme = useColorScheme();
   const [email, setEmail] = useState("vee");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("vee");
-  const { fetchCompanySetup } = useContext(VeeContext);
+  const { fetchCompanySetup, checkAuth } = useContext(VeeContext);
   const [isLoading, setIsloading] = useState(false);
   // const bg = ''
 
@@ -75,7 +77,7 @@ const Page = () => {
         await SecureStore.setItemAsync("access_token", response.data.access);
         await SecureStore.setItemAsync("refresh_token", response.data.refresh);
         fetchCompanySetup();
-
+        checkAuth();
         // Save access and refresh tokens to SecureStore
 
         // const token = response.data.access;
@@ -105,8 +107,8 @@ const Page = () => {
       style={{
         flex: 1,
         gap: 6,
+        backgroundColor:Colors[colorScheme ?? "light"].background
 
-        backgroundColor: "white",
       }}
     >
 
@@ -133,73 +135,89 @@ const Page = () => {
         <Text style={styles.subtext}>Don’t have an account? Signup</Text>
       </ImageBackground>
     
-      <View
+      <ThemedView
         style={{
           gap: 0,
           justifyContent: "start",
           flex: 1,
+          flexGrow:1,
           paddingHorizontal: 25,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           marginTop: 35
         }}
         lightColor="#fff"
+        // darkColor="#000"
       >
                <View style={{flexDirection:'row', alignItems:'center', marginTop: 5, marginBottom:10, gap: 6, justifyContent:'center'}}>
         <Image
           source={adap}
           style={{
-            width: 18,
-            height: 18,
+            width: 38,
+            height: 38,
             objectFit: "contain",
             alignSelf: "center",
    
           }}
         />
 
-        <Text style={{fontSize: 15, fontWeight: '900', color: 'black'}}>VEEZITOR</Text>
+        <ThemedText style={{fontSize: 19, fontWeight: '900', }}>VEEZITOR</ThemedText>
         </View>
         <View style={{ gap: 6,  }}>
-          <Text
+          <ThemedText
             style={{
               paddingVertical: 3,
-              fontSize: 14,
-              fontWeight: "400",
-              fontFamily: "OutfitRegular",
-              color: "#000",
+              fontSize: 15,
+              fontFamily: 'SpaceGroteskMedium',
             }}
           >
             Username
-          </Text>
+          </ThemedText>
           <TextInput
             autoCapitalize="none"
-            style={styles.input}
+
+            style={[
+              {
+                borderColor: Colors[colorScheme ?? "light"].cardborderColor,
+                color:Colors[colorScheme ?? "light"].qrcolor
+              },
+              styles.input,
+            ]}
+            
             placeholder="Email Address"
+            placeholderTextColor={ Colors[colorScheme ?? "light"].icon}
             value={email}
             onChangeText={(text) => {
               setEmail(text);
               validateEmail(text);
             }}
           />
-          <Text style={styles.errorMessage}>{emailError}</Text>
+          <ThemedText style={styles.errorMessage}>{emailError}</ThemedText>
         </View>
 
-        <View style={{ gap: 6,  }}>
-          <Text
+        <ThemedView style={{ gap: 6,  }}
+            
+        >
+
+          <ThemedText
             style={{
-              fontSize: 14,
-              fontWeight: "400",
-              marginTop: 0,
-              fontFamily: "OutfitRegular",
-              color: "#000",
+              fontSize: 15,
+              fontFamily: 'SpaceGroteskMedium',
             }}
           >
             Enter Password
-          </Text>
+          </ThemedText>
           <TextInput
             autoCapitalize="none"
-            style={styles.input}
+            style={[
+              {
+                borderColor: Colors[colorScheme ?? "light"].cardborderColor,
+                color:Colors[colorScheme ?? "light"].qrcolor
+              },
+              styles.input,
+            ]}
             placeholder="Password"
+            placeholderTextColor={ Colors[colorScheme ?? "light"].icon}
             secureTextEntry={true}
             value={password}
             onChangeText={(text) => {
@@ -207,9 +225,10 @@ const Page = () => {
             }}
           />
           <Text style={styles.errorMessage}></Text>
-        </View>
+        </ThemedView>
 
-        <View
+        <ThemedView
+        
           style={{
             marginTop: -6,
             alignSelf: "flex-end",
@@ -227,8 +246,8 @@ const Page = () => {
           >
             <Link href="(auth)/login">Forgot Password?</Link>
           </Text>
-        </View>
-        <View style={{ gap: 6,  marginTop: 9 }}>
+        </ThemedView>
+        <ThemedView     style={{ gap: 6,  marginTop: 9 }}>
           <TouchableOpacity
             style={{ padding: 20, backgroundColor: "#1D61E7", borderRadius: 7 }}
             onPress={submitform}
@@ -239,9 +258,9 @@ const Page = () => {
 )}
             </Text>
           </TouchableOpacity>
-        </View>
+        </ThemedView>
 
-        <Text
+        <ThemedText
           style={{
             gap: 6,
             paddingHorizontal: 10,
@@ -251,9 +270,9 @@ const Page = () => {
           }}
         >
 Or login with <Link href="(auth)">Create Account</Link>{" "}
-        </Text>
+        </ThemedText>
 
-        <View style={{justifyContent:'space-between', flexDirection:'row', gap: 5, width: '100%', paddingTop: 20}}>
+        <ThemedView      style={{justifyContent:'space-between', flexDirection:'row', gap: 5, width: '100%', paddingTop: 20}}>
           <TouchableOpacity style={styles.socialbtn}>
           <Image
           source={google}
@@ -280,12 +299,12 @@ Or login with <Link href="(auth)">Create Account</Link>{" "}
         />
          <Text style={styles.mybtn}>Google</Text>
           </TouchableOpacity>
-        </View>
+        </ThemedView>
 
-        <View style={{marginTop: 30, backgroundColor:'transparent', }}>
-      <Text style={styles.mybtn}>By signing up, you agree to the Terms of Service and Data Processing Agreement</Text>
-      </View>
-      </View>
+        <ThemedView style={{marginTop: 30, backgroundColor:'transparent', }}>
+      <ThemedText lightColor="#1A1C1E" style={styles.mybtn}>By signing up, you agree to the Terms of Service and Data Processing Agreement</ThemedText>
+      </ThemedView>
+      </ThemedView>
 
    
     </ScrollView>
@@ -303,7 +322,7 @@ const styles = StyleSheet.create({
   },
   mybtn:{
 fontFamily: 'OutfitRegular',
-color: '#1A1C1E',
+
 textAlign:'center'
   },
 
@@ -356,8 +375,6 @@ textAlign:'center'
   input: {
     fontFamily: "OutfitRegular",
     width: "100%",
-    color: "#1A1C1E",
-    borderColor: "#CFCFCF",
     borderWidth: 1,
     borderRadius: 4,
     padding: 7,

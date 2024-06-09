@@ -2,7 +2,7 @@ import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
 const Dashboardcard = ({data}) => {
     const { width, height } = Dimensions.get('window');
@@ -17,7 +17,7 @@ const Dashboardcard = ({data}) => {
 {data.map((item, index) => (
 <ThemedView key={index} style={{padding:10, gap: 7, flexDirection:'column', justifyContent:'space-between', alignItems:'start',  width: newWidth, borderColor:'#1f1f1f1d', borderWidth:1, borderRadius: 4} } lightColor="#fff" darkColor="#111111">
 <ThemedView style={styles.icon} lightColor='#f3f3f3' darkColor='#666'>
-<AntDesign name={item.icon} size={20}  color={'#000'} />
+<MaterialIcons name={item.icon} size={24} color="#000" />
 </ThemedView>
 
 <ThemedView darkColor='transparent'>
