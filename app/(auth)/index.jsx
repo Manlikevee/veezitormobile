@@ -76,7 +76,7 @@ alignItems:'center',
     justifyContent:'center'
   },
   bottomHalf: {
-    flex: 0.5,
+    flex: 0.6,
 gap:10,
     padding:20,
   },

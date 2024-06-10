@@ -19,7 +19,7 @@ const SegmentedControl = React.memo(
     const { width: windowWidth } = useWindowDimensions();
     const colorScheme = useColorScheme();
     const internalPadding = 20;
-    const segmentedControlWidth = windowWidth - 35;
+    const segmentedControlWidth = windowWidth - 31;
 
     const itemWidth =
       (segmentedControlWidth - internalPadding) / options.length;
@@ -37,8 +37,10 @@ const SegmentedControl = React.memo(
         style={[
           styles.container,
           {
+            borderWidth: 1,
             width: segmentedControlWidth,
             borderRadius: 2,
+            borderColor: Colors[colorScheme ?? "light"].cardborderColor,
             paddingLeft: internalPadding / 2,
           },
         ]}
@@ -49,7 +51,7 @@ const SegmentedControl = React.memo(
               width: itemWidth,
               position: 'absolute',
               borderRadius: 10,
-          
+       
               height: '80%',
               top: '10%',
               backgroundColor: Colors[colorScheme ?? "light"].cardborderColor,
@@ -70,8 +72,6 @@ const SegmentedControl = React.memo(
                 {
                   
                   width: itemWidth,
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'transparent'
                 },
                 styles.labelContainer,
               ]}
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     height: 55,
-    marginTop:5,
     // backgroundColor:'#fff',
   },
   activeBox: {

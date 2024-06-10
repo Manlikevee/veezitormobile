@@ -24,6 +24,7 @@ import { router } from "expo-router";
 import axios from "axios";
 import { VeeContext } from "@/components/Veecontext";
 import bg from "../../assets/images/Head.png";
+
 import { StatusBar } from "react-native";
 import { Redirect } from "expo-router";
 import fb from  "../../assets/images/fb.png";

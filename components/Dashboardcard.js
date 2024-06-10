@@ -3,8 +3,10 @@ import React from 'react'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 const Dashboardcard = ({data}) => {
+  const colorScheme = useColorScheme();
     const { width, height } = Dimensions.get('window');
     const newWidth = width / 1.9;
     const newHeight = height / 2;
@@ -36,7 +38,7 @@ export default Dashboardcard
 const styles = StyleSheet.create({
     contentContainer:{
         gap: 20,
-        paddingVertical: 20
+        paddingVertical: 6
           },value:{
             fontSize: 17
           },

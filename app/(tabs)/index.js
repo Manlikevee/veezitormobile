@@ -22,8 +22,9 @@ import { VeeContext } from "@/components/Veecontext";
 import { Redirect } from "expo-router";
 import SegmentedControl from "@/components/segmented-control/SegmentedControl";
 import Visitortable from "@/components/Visitortable";
-import bg from "../../assets/images/Head.png";
+import bg from "../../assets/images/Group16.png";
 import ShimmerEffect from "@/components/ShimmerEffect";
+import Service from '@/components/Service'
 export default function HomeScreen() {
   const SCREEN_WIDTH = Dimensions.get("window").width;
   const options = ["Pending", "Awaiting", "Inprogress"];
@@ -43,6 +44,15 @@ export default function HomeScreen() {
       number: 0,
       name: "Reshedules",
     },
+  ];
+
+  const mydata = [
+    { name: 'Visitors List', icon: 'home' },
+    { name: 'Vendors', icon: 'user' },
+    { name: 'Scan Out', icon: 'cog' },
+    { name: 'Blacklist', icon: 'bell' },
+    { name: 'New Visitor', icon: 'camera' },
+    { name: 'Settings', icon: 'heart' },
   ];
   const [selectedOption, setSelectedOption] = useState("Awaiting");
   const colorScheme = useColorScheme();
@@ -69,8 +79,8 @@ export default function HomeScreen() {
       <View style={styles.scrollgap}>
         <ImageBackground
           source={bg}
+          borderRadius={8}
           style={{
-            backgroundColor: "red",
             minHeight: 110,
             marginTop: 20,
             paddingHorizontal: 10,
@@ -79,7 +89,8 @@ export default function HomeScreen() {
             justifyContent: "center",
           }}
         >
-          <View style={styles.fd} lightColor="#fbfcfd" darkColor="#000">
+           <View style={styles.overlay} />
+          <View style={styles.fd} lightColor="transparent" darkColor="#000">
             <View>
               <ThemedText
                 style={styles.gtext}
@@ -116,6 +127,16 @@ export default function HomeScreen() {
         </ImageBackground>
 
         <Dashboardcard data={data} />
+
+
+        <FlatList
+        data={mydata}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Service name={item.name} icon={item.icon} />
+        )}
+        numColumns={3}
+      />
 
         <SegmentedControl
           options={options}
@@ -298,6 +319,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "flex-end",
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius:8,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the opacity as needed
   },
   newbtn: {
     backgroundColor: "#6a1039",

@@ -50,7 +50,7 @@ const ModalPopup = ({ visible, onClose }) => {
     setIsLoading(true);
     
     try {
-      const url = `/logoutqr? tag_id=${scanneddata}`
+      const url = `/logoutqr?tag_id=${scanneddata}`
       const response = await axiosInstance.get(url);
       ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
       console.log(response.data);

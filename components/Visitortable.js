@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View,TouchableOpacity, FlatList ,  Image,Dimensions, ActivityIndicator, Pressable } from 'react-native'
 import { ThemedView } from '@/components/ThemedView';
-import { EvilIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import { EvilIcons, Feather, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { ThemedText } from './ThemedText';
 import  {Colors}  from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -71,8 +71,9 @@ async function myacceptvisit(id){
                   ]}
         
         >
-            <ThemedView style={styles.minicion}  darkColor="#111111">
-            <EvilIcons name='search' size={25} style={{color:Colors[colorScheme ?? "light"].icon}} />
+            <ThemedView style={styles.minicion}   darkColor="#111111">
+          
+            <MaterialCommunityIcons name="note-search-outline" size={24} style={{color:Colors[colorScheme ?? "light"].icon}} />
             </ThemedView>
        
             <TextInput

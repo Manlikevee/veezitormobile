@@ -13,7 +13,7 @@ export default function Authlayout() {
        <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />
   
-
+      <Stack.Screen name="welcomeback" options={{ headerShown: false }} />
     </Stack>
 
   );
