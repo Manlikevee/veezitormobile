@@ -1,30 +1,33 @@
 import { StyleSheet, Text, TextInput, View,TouchableOpacity, FlatList ,  Image,Dimensions, ActivityIndicator, Pressable } from 'react-native'
 import { ThemedView } from '@/components/ThemedView';
-import { EvilIcons, Feather, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import {  MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { ThemedText } from './ThemedText';
 import  {Colors}  from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import bg from "../assets/images/avatar.png";
 import successicon from '../assets/images/success.png' 
 import pendicon from '../assets/images/pend.png' 
-import myline from '../assets/images/line.png' ;
 import ShimmerEffect from './ShimmerEffect';
-import { useRef, useState, useCallback, useContext, useMemo, React } from "react";
+import { useRef, useState, React } from "react";
 import {
     BottomSheetModal,
-    BottomSheetModalProvider,
     BottomSheetScrollView,
     BottomSheetBackdrop,
     BottomSheetFooter
   } from "@gorhom/bottom-sheet";
+import Setqr from './Setqr'
 
-
-const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadingaccept, acceptvisitor}) => {
+const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadingaccept, acceptvisitor, signout}) => {
     const [isOpen, setOpen] = useState(false);
+    const [modaldata, setModaldata] = useState('');
     const bottomSheetModalRef = useRef(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const toggleModal = () => {
+      setModalVisible(!modalVisible);
+    };
     const SCREEN_WIDTH = Dimensions.get("window").width;
     const snapPoints = ["30%","45%",  "50%", "50%", "85%" ];
-
+    const veeref = visitationdata?.ref
   async  function handlePresentModal(id) {
     
         bottomSheetModalRef.current?.present();
@@ -36,6 +39,19 @@ const Visitortable = ({data, toggleVisitorBar, visitationdata, timeAgo, loadinga
         }, 400);
       }
 
+      function myassignqr({mytrf, first_name, last_name}){
+        console.log(mytrf)
+        console.log(first_name)
+        console.log(last_name)
+
+        const requireddata = {
+          first_name : first_name,
+          last_name : last_name,
+          mytrf : mytrf
+        }
+        setModaldata(requireddata)
+        setModalVisible(true)
+      }
 async function myacceptvisit(id){
 
   if(id){
@@ -61,6 +77,8 @@ async function myacceptvisit(id){
   return (
 
         <ThemedView style={styles.mytable} lightColor='transparent' darkColor='transparent'>
+       
+       {modalVisible && visitationdata && (<Setqr modaldata={modaldata} visible={modalVisible}  onClose={toggleModal} />)}
         <ThemedView 
          darkColor="#111111"
                   style={[
@@ -133,9 +151,16 @@ async function myacceptvisit(id){
                             <ThemedText style={styles.actualtext} lightColor='#000' >Confirmation</ThemedText>
                         </ThemedView>
                         <ThemedView  darkColor="#111111"  style={{justifyContent:'space-between', flexDirection:'row'}}>
-                            <ThemedText style={styles.placeholder} lightColor='#000' >Date</ThemedText>
+                            <ThemedText style={styles.placeholder} lightColor='#000' >Date </ThemedText>
                             <ThemedText style={styles.actualtext} lightColor='#000' >{formatDate(info?.clock_in)}</ThemedText>
                         </ThemedView>
+{info?.tag_id && (
+     <ThemedView  darkColor="#111111"  style={{justifyContent:'space-between', flexDirection:'row'}}>
+     <ThemedText style={styles.placeholder} lightColor='#000' >Tag Id</ThemedText>
+     <ThemedText style={styles.actualtext} lightColor='#000' >{info?.tag_id}</ThemedText>
+ </ThemedView>
+)}
+                   
                         
                         </ThemedView>
                         </TouchableOpacity>
@@ -168,22 +193,39 @@ async function myacceptvisit(id){
               {visitationdata.stage_1 && !loadingaccept  ? (
                 <>
                   {visitationdata?.stage_2 && !visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
-            
-              <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
+                    <Pressable
+  onPress={() => {
+    if (visitationdata) {
+      myassignqr({
+        mytrf: visitationdata.ref,
+        first_name: visitationdata.first_name,
+        last_name: visitationdata.last_name,
+      });
+    } else {
+      console.error('visitationdata is undefined or null');
+    }
+  }}
+>
+          <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
                       <MaterialCommunityIcons name='qrcode-scan' size={14} style={styles.footerIcon} />
                       <ThemedText lightColor='white' style={styles.footerText}>
                         Assign Qr Tag 
                       </ThemedText>
                     </ThemedView>
+            </Pressable>
+    
 
     
                   ) : visitationdata?.stage_2 && visitationdata?.stage_3 && !visitationdata?.stage_4 && !loadingaccept ? (
+                    <Pressable onPress={() => signout(veeref)}>
                     <ThemedView lightColor='#1D61E7' style={styles.footerContainer}>
                       <MaterialCommunityIcons name='logout' size={14} style={styles.footerIcon} />
                       <ThemedText lightColor='white' style={styles.footerText}>
-                        Sign Out
+                        Sign Out 
                       </ThemedText>
                     </ThemedView>
+                  </Pressable>
+      
                   ) : (
                     <Pressable onPress={() => myacceptvisit(visitationdata?.ref)}>
                     <ThemedView lightColor='#9a4c1e' style={styles.footerContainer}>
@@ -364,11 +406,15 @@ async function myacceptvisit(id){
         />
         <ThemedView lightColor='transparent' darkColor='transparent'>
             <ThemedText>Signout</ThemedText>
+
+            <ThemedText>
             {visitationdata?.stage_4 ? (timeAgo(visitationdata?.clock_out)) :  <ShimmerEffect
       width={SCREEN_WIDTH / 2.2}
       height={11}
       style={styles.shimmer}
     />  }
+            </ThemedText>
+ 
         </ThemedView>
 
    </ThemedView>
@@ -397,9 +443,9 @@ gap: 10
     mbx:{
 padding: 11,
 borderWidth: 1,
-gap: 9,
+gap: 12,
 paddingVertical: 17,
-borderRadius: 10
+borderRadius: 7
     },
     // handleIndicator: {
     //   backgroundColor: '#999',

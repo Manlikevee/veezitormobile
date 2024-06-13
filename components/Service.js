@@ -1,14 +1,35 @@
 // Service.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 const Service = ({ name, icon }) => {
+  const colorScheme = useColorScheme();
   return (
-    <ThemedView style={styles.itemContainer}>
+    <ThemedView style={{flex: 1, alignItems:'center', margin:6}}>
+    <ThemedView lightColor='#f9f9f9' darkColor='#111111'  style={[
+      {
+        borderColor: Colors[colorScheme ?? "light"].cardborderColor,
+      },
+      styles.itemContainer,
+    ]}>
+                  <Image
+          source={icon}
+          style={{
+            width: 24,
+            height: 24,
+            objectFit: "cover",
+            alignSelf: "center",
 
-      <ThemedText style={styles.itemText}>{name}</ThemedText>
+          }}
+        />
+
     </ThemedView>
+<ThemedText style={styles.itemText}>{name}</ThemedText>
+    </ThemedView>
+
   );
 };
 
@@ -17,15 +38,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 5,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
   },
   itemText: {
     marginTop: 5,
-    fontSize: 16,
 
   },
 });

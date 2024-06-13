@@ -3,8 +3,10 @@ import React from 'react'
 import { OnboardFlow } from 'react-native-onboard';
 import { router } from "expo-router";
 import { StatusBar } from 'react-native';
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 const onboarding = () => {
-  
+  const colorScheme = useColorScheme();
   
   const handleDone = () => {
     router.replace('/(auth)');
@@ -13,11 +15,18 @@ const onboarding = () => {
     <View>
        <StatusBar barStyle={'dark'} />
 <OnboardFlow
+// pageStyle={
+//   styles.mybg
+// }
+style={{backgroundColor: Colors[colorScheme ?? "light"].background}}
 onDone={handleDone}
 
-titleStyle={
-styles.mytt
-}
+titleStyle={[
+  {
+    color: Colors[colorScheme ?? "light"].text,
+  },
+  styles.mytt,
+]}
 subtitleStyle={
   styles.mytts
 }
@@ -57,5 +66,8 @@ const styles = StyleSheet.create({
 
     textAlign:'center',
     fontSize: 16
+  },
+  mybg:{
+    backgroundColor:'red'
   }
 })

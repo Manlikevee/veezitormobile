@@ -38,7 +38,7 @@ const Page = () => {
   const [email, setEmail] = useState("vee");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("vee");
-  const { fetchCompanySetup, checkAuth } = useContext(VeeContext);
+  const { fetchCompanySetup, checkAuth, isauth , setisauth, } = useContext(VeeContext);
   const [isLoading, setIsloading] = useState(false);
   // const bg = ''
 
@@ -79,6 +79,7 @@ const Page = () => {
         await SecureStore.setItemAsync("refresh_token", response.data.refresh);
         fetchCompanySetup();
         checkAuth();
+        setisauth(true)
         // Save access and refresh tokens to SecureStore
 
         // const token = response.data.access;

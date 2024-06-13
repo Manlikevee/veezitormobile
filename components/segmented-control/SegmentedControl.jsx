@@ -89,7 +89,7 @@ const SegmentedControl = React.memo(
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 55,
+    height: 56,
     // backgroundColor:'#fff',
   },
   activeBox: {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   labelContainer: { justifyContent: 'center', alignItems: 'center' },
   label: {
    
-    fontSize: 16,
+    fontSize: 15,
       // fontFamily: 'SpaceGroteskRegular',
   },
 });

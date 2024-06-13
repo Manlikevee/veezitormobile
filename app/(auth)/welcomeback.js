@@ -33,10 +33,101 @@ import {
   import { ThemedView } from "../../components/ThemedView";
   import { MaterialIcons } from '@expo/vector-icons';
   import { FontAwesome5 } from '@expo/vector-icons';
+  
 const welcomeback = () => {
+    const url = "https://veezitorbackend.vercel.app/token/";
     const colorScheme = useColorScheme();
-    const [password, setPassword] = useState("vee");
+    const [password, setPassword] = useState("");
     const [isLoading, setIsloading] = useState(false);
+    const {fetchVisitors, fetchQrCode, fetchEmployeeData, fetchCompanySetup,
+      authenticated, setAuthenticated, checkAuth, isauth , setisauth, refreshAccessToken, username
+    } = useContext(VeeContext);
+    
+    useEffect(() => {
+      const navigateIfAuthenticated = async () => {
+        const myAuthStatus = await checkAuth();
+        console.log('myAuthStatus is', myAuthStatus);
+        if (!myAuthStatus) {
+          router.replace('onboarding');
+        } 
+        else if(myAuthStatus && isauth){
+          router.replace('(tabs)/');
+        }
+      };
+  
+      navigateIfAuthenticated();
+      
+    }, [router, isauth]);
+
+    async  function setmyauth(){
+setIsloading(true)
+      try {
+        const result = await refreshAccessToken();
+        if (result) {
+          
+          setisauth(true)
+          setIsloading(false)
+        } else {
+          console.log("failed");
+          setIsloading(false)
+        }
+      } catch (error) {
+        console.log("failed");
+        setIsloading(false);
+      }
+
+    }
+    const submitform = async () => {
+      const navigation = router;
+  
+      setIsloading(true);
+  
+      const data = {
+        username: username,
+        password: password,
+      };
+  
+      if (username && password) {
+        try {
+          const response = await axios.post(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+  
+          // Successful login
+          ToastAndroid.show('Login successfully', ToastAndroid.SHORT);
+  
+          await SecureStore.setItemAsync("access_token", response.data.access);
+          await SecureStore.setItemAsync("refresh_token", response.data.refresh);
+          fetchCompanySetup();
+          setisauth(true);
+          setIsloading(false);
+  
+          setTimeout(() => {
+            navigation.replace("/(tabs)");
+          }, 1500);
+        } catch (error) {
+          // Failed login
+          ToastAndroid.show( error?.response?.data?.message || "Invalid Username or Password", ToastAndroid.SHORT);
+          console.log(error || "Invalid Username or Password");
+          setIsloading(false);
+        }
+      } else {
+        setIsloading(false);
+      }
+    };
+  
+    const handleLogout = async () => {
+      console.log('handle logout')
+      await SecureStore.deleteItemAsync('access_token');
+      await SecureStore.deleteItemAsync('refresh_token');
+      await SecureStore.deleteItemAsync('userdata_token');
+      setAuthenticated(false);
+      setisauth(false);
+      router.replace('onboarding');
+    };
+
   return (
 <>
 <ThemedView style={{flex:1}}>
@@ -76,7 +167,7 @@ const welcomeback = () => {
         </View>
 <ThemedView lightColor="transparent">
 <ThemedText style={styles.welcometxt}>Welcome Back</ThemedText>
-    <ThemedText style={styles.welcometxt}>Victor</ThemedText>
+    <ThemedText style={styles.welcometxt}>{username}</ThemedText>
 </ThemedView>
 
 
@@ -107,7 +198,6 @@ const welcomeback = () => {
             }}
           />
           
-          
           <Text
             style={{
               color: "#3C9AFB",
@@ -119,10 +209,12 @@ const welcomeback = () => {
             <Link href="(auth)/login">Forgot Password?</Link>
           </Text>
 
+   
+
           <ThemedView   lightColor="transparent"   style={{ gap: 6,  marginTop: 15, flexDirection:'row' }}>
           <TouchableOpacity
             style={{ padding: 15, backgroundColor: "#1D61E7", borderRadius: 5, flexGrow:1 }}
-            // onPress={submitform}
+            onPress={submitform}
           >
             <Text style={{ color: "white", textAlign: "center" }}>
               {isLoading ? ( <ActivityIndicator size="small" color="#fff" />
@@ -132,7 +224,7 @@ const welcomeback = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={{ padding: 15, backgroundColor: "#1D61E7", borderRadius: 5 }}
-            // onPress={submitform}
+            onPress={setmyauth}
           >
             <Text style={{ color: "white", textAlign: "center" }}>
               {isLoading ? ( <ActivityIndicator size="small" color="#fff" />
@@ -142,7 +234,7 @@ const welcomeback = () => {
           </TouchableOpacity>
         </ThemedView>
 
-                  
+        <TouchableOpacity onPress={handleLogout}>
         <Text
             style={{
               color: "#3C9AFB",
@@ -153,9 +245,11 @@ const welcomeback = () => {
       marginTop:10
             }}
           >
-            Not You? 
-            <Link href="(auth)/login"> Signout</Link>
+            Not You?  Signout
+           
           </Text>
+ </TouchableOpacity>     
+  
 
         <ThemedView lightColor="#EBEBFF" style={{flexDirection:'row', gap: 5, alignItems:'center', padding:12, gap: 10, justifyContent:'space-between', marginTop:20}}>
             <ThemedView lightColor="transparent" darkColor="transparent" style={{flexDirection:'row', gap:10, alignItems:'center'}}>

@@ -27,7 +27,7 @@ const product = () => {
 
 
 {employeedataloaded ? (
-  <Employeetable data={employee}/>
+  <Employeetable data={employee} key={employee.id}/>
 ) : (
 
 <>

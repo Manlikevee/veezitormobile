@@ -46,7 +46,7 @@ export const VeeContextProvider = ({ children }) => {
   const [appearanceMode, setAppearanceMode] = useState("light");
   const [loadingaccept, setLoadingAccept] = useState(false);
   const [datatoken, setDatatoken] = useState(null);
-
+  const [isauth, setisauth] = useState(false);
 
   const toggleAppearanceMode = async () => {
     if (appearanceMode === "light") {
@@ -164,6 +164,7 @@ export const VeeContextProvider = ({ children }) => {
         setLoadingAccept(false);
         toggleVisitorBar('close');
       } catch (error) {
+        console.log(error)
         if (error.response) {
           console.error(error.response.data.message);
         } else if (error.request) {
@@ -347,9 +348,10 @@ export const VeeContextProvider = ({ children }) => {
   const handleLogout = async () => {
     await SecureStore.deleteItemAsync('access_token');
     await SecureStore.deleteItemAsync('refresh_token');
+    setisauth(false)
     setTimeout(() => {
       navigation.replace("/(auth)/login");
-    }, 2000);
+    }, 1000);
   };
 
   const fetchPendingApprovals = async () => {
@@ -376,7 +378,7 @@ export const VeeContextProvider = ({ children }) => {
         const response = await axiosInstance.get("/visitor");
         if (response) {
           console.log("Visitors");
-          setVisitors(response.data);
+          // setVisitors(response.data);
           const myvisitors = response.data
           if(myvisitors){
             const pendingVisitors = myvisitors.filter(
@@ -423,10 +425,23 @@ export const VeeContextProvider = ({ children }) => {
       }
     }
   };
+
   const checkAuth = async () => {
-    let accessToken = await SecureStore.getItemAsync('access_token');
-    setAuthenticated(true);
+    try {
+      const accessToken = await SecureStore.getItemAsync('access_token');
+      const isAuthenticated = !!accessToken; // `!!` converts the value to a boolean
+      setAuthenticated(isAuthenticated);
+      return isAuthenticated;
+    } catch (error) {
+      console.error('Failed to get access token:', error);
+      return false;
+    }
   };
+
+  // const checkAuth = async () => {
+  //   let accessToken = await SecureStore.getItemAsync('access_token');
+  //   setAuthenticated(true);
+  // };
   const fetchPlans = async () => {
     let accessToken = await SecureStore.getItemAsync('access_token');
     if (accessToken) {
@@ -475,7 +490,53 @@ export const VeeContextProvider = ({ children }) => {
     }
   };
 
-
+  async function signout(ref){
+    if (ref){
+      if (ref !== 'close') {
+        setLoadingAccept(true)
+           try {
+             const payload = {
+               post_id: ref,
+             };
+       
+             // Define endpoint
+             const endpoint = '/logoutvisitor';
+             
+             // Make the POST request
+             const response = await axiosInstance.post(endpoint, payload);
+       
+             if (response.status === 200) {
+               console.log('response', response);
+        
+          
+               ToastAndroid.show( "Visitor LoggedOut Successfully", ToastAndroid.SHORT);
+               setVisitationdata(response.data?.visitorsdata);
+               fetchVisitors();
+             }
+             setLoadingAccept(false);
+          
+           } catch (error) {
+             if (error.response) {
+               // Server responded with a status other than 200 range
+        
+               ToastAndroid.show( error.response.data.error, ToastAndroid.SHORT);
+             } else if (error.request) {
+               // Request was made but no response received
+           
+               ToastAndroid.show( 'No response received from the server.', ToastAndroid.SHORT);
+             } else {
+               // Something else happened in setting up the request
+           
+               ToastAndroid.show( error.message || 'No response received from the server.', ToastAndroid.SHORT);
+             }
+           } finally {
+        
+             setLoadingAccept(false);
+           }
+         }
+    }
+    
+  };
   async function fetchuserdata() {
 
     let accessToken = await SecureStore.getItemAsync('access_token');
@@ -615,10 +676,14 @@ export const VeeContextProvider = ({ children }) => {
         timeAgo,
         toggleAppearanceMode,
         setmytheme,
+        signout,
         loadingaccept,
         authenticated,
          setAuthenticated,
-         checkAuth
+         checkAuth,
+         isauth,
+         setisauth,
+         refreshAccessToken
       }}
     >
       {children}

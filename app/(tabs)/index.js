@@ -22,9 +22,16 @@ import { VeeContext } from "@/components/Veecontext";
 import { Redirect } from "expo-router";
 import SegmentedControl from "@/components/segmented-control/SegmentedControl";
 import Visitortable from "@/components/Visitortable";
-import bg from "../../assets/images/Group16.png";
+import bg from "../../assets/images/vg(2).jpg";
 import ShimmerEffect from "@/components/ShimmerEffect";
 import Service from '@/components/Service'
+import tool1 from '@/assets/tools/tool(1).png'
+import tool2 from '@/assets/tools/tool(2).png'
+import tool3 from '@/assets/tools/tool(3).png'
+import tool4 from '@/assets/tools/tool(4).png'
+import tool5 from '@/assets/tools/tool(5).png'
+import tool6 from '@/assets/tools/tool(6).png'
+import tool7 from '@/assets/tools/tool(7).png'
 export default function HomeScreen() {
   const SCREEN_WIDTH = Dimensions.get("window").width;
   const options = ["Pending", "Awaiting", "Inprogress"];
@@ -47,12 +54,11 @@ export default function HomeScreen() {
   ];
 
   const mydata = [
-    { name: 'Visitors List', icon: 'home' },
-    { name: 'Vendors', icon: 'user' },
-    { name: 'Scan Out', icon: 'cog' },
-    { name: 'Blacklist', icon: 'bell' },
-    { name: 'New Visitor', icon: 'camera' },
-    { name: 'Settings', icon: 'heart' },
+    { name: 'Visitors List', icon: tool6 },
+    { name: 'Vendors', icon: tool5 },
+    { name: 'Scan Out', icon: tool4 },
+    { name: 'Blacklist', icon: tool1 },
+    // { name: 'New Visitor', icon: tool5 },
   ];
   const [selectedOption, setSelectedOption] = useState("Awaiting");
   const colorScheme = useColorScheme();
@@ -61,14 +67,11 @@ export default function HomeScreen() {
     visitordataloaded,
     loadingaccept,
     username,
-    fetchvisitors,
+    signout,
     acceptVisitor,
-    visitors,
     awaiting,
     pendingApproval,
-    reshedule,
     inProgress,
-    employeedataloaded,
     toggleVisitorBar,
     visitationdata,
     timeAgo
@@ -128,15 +131,20 @@ export default function HomeScreen() {
 
         <Dashboardcard data={data} />
 
-
-        <FlatList
+<ThemedView lightColor="white" style={{padding:6, borderRadius:5, gap: 10, marginBottom:6,borderWidth:1, borderColor: Colors[colorScheme ?? "light"].cardborderColor}}>
+  <ThemedText>Our Services</ThemedText>
+<FlatList
+        scrollEnabled={false}
         data={mydata}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Service name={item.name} icon={item.icon} />
         )}
-        numColumns={3}
+        numColumns={4}
       />
+</ThemedView>
+
+
 
         <SegmentedControl
           options={options}
@@ -159,6 +167,7 @@ export default function HomeScreen() {
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
                   acceptvisitor={acceptVisitor}
+                  signout={signout}
                 />
               )}
               {selectedOption == "Inprogress" && (
@@ -169,6 +178,7 @@ export default function HomeScreen() {
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
                   acceptvisitor={acceptVisitor}
+                  signout={signout}
                 />
               )}
               {selectedOption == "Pending" && (
@@ -179,6 +189,7 @@ export default function HomeScreen() {
                   visitationdata={visitationdata}
                   loadingaccept={loadingaccept}
                   acceptvisitor={acceptVisitor}
+                  signout={signout}
                 />
               )}
             </>
@@ -327,7 +338,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     borderRadius:8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the opacity as needed
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Adjust the opacity as needed
   },
   newbtn: {
     backgroundColor: "#6a1039",

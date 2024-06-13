@@ -1,4 +1,4 @@
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import {
 	ActivityIndicator,
 	Image,
@@ -9,13 +9,32 @@ import {
   import { ThemedText } from "@/components/ThemedText";
   import { ThemedView } from "@/components/ThemedView";
   import bigbg from  "../assets/images/bigbg.png";
-  import TypeWriter from 'react-native-typewriter'
-  
+  import TypeWriter from 'react-native-typewriter';
+import { useEffect, useContext } from "react";
+import { VeeContext } from '@/components/Veecontext';
 const index = () => {
+  const { checkAuth} = useContext(VeeContext);
 	  	// return   ;
+      useEffect(() => {
+        const navigateAfterTimeout = () => {
+          const timer = setTimeout(async () => {
+            const myAuthStatus = await checkAuth();
+            console.log('myAuthStatus is', myAuthStatus);
+            if (myAuthStatus) {
+              router.replace('(auth)/welcomeback'); // Replace with your actual route
+            } else{
+              router.replace('onboarding');
+            }
+          }, 3000); // 3 seconds
+    
+          return () => clearTimeout(timer); // Cleanup the timer on unmount
+        };
+    
+        navigateAfterTimeout();
+      }, [router]);
   return (
 	<ThemedView style={{flex:1}} >
-		<Redirect href="(auth)/welcomeback" />
+		{/* <Redirect href="(tabs)/" /> */}
 		      <ImageBackground
         source={bigbg}
         style={{ backgroundColor: "transparent", flex:1,  paddingHorizontal: 20, gap:0, justifyContent:'center', alignItems:'center'}}
@@ -35,11 +54,11 @@ const index = () => {
 
         <ThemedText style={{fontSize: 19, fontWeight: '900', }}>
 
-		<TypeWriter style={{color:'black', fontSize: 23, fontFamily:'SpaceGroteskBold'}} typing={1}>Veezitors.</TypeWriter>
+		<TypeWriter style={{ fontSize: 23, fontFamily:'SpaceGroteskBold'}} typing={1}>Veezitors.</TypeWriter>
 
 		</ThemedText>
 
-		<ActivityIndicator color={'black'} />
+		<ActivityIndicator  />
 
         </ThemedView>
 		<ThemedView>

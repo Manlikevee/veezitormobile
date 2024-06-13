@@ -11,7 +11,7 @@ import Avatar from '@/components/Avatar'
 import { VeeContext } from '@/components/Veecontext';
 export default function TabLayout() {
   const {
-    authenticated, setAuthenticated, checkAuth
+    authenticated, setAuthenticated, checkAuth, setisauth
   } = useContext(VeeContext);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -24,10 +24,11 @@ export default function TabLayout() {
    
   
     const handleLogout = async () => {
-      await SecureStore.deleteItemAsync('access_token');
-      await SecureStore.deleteItemAsync('refresh_token');
-      await SecureStore.deleteItemAsync('userdata_token');
-      setAuthenticated(false);
+      // await SecureStore.deleteItemAsync('access_token');
+      // await SecureStore.deleteItemAsync('refresh_token');
+      // await SecureStore.deleteItemAsync('userdata_token');
+      // setAuthenticated(false);
+      setisauth(false);
     };
 
     

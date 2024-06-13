@@ -1,26 +1,46 @@
-import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useState, useContext, useEffect } from 'react'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { VeeContext } from '@/components/Veecontext';
-import { Redirect } from 'expo-router';
+import { Redirect, router } from 'expo-router';
+import ShimmerEffect from './ShimmerEffect';
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import * as SecureStore from 'expo-secure-store';
 const Dashlayout = ({children}) => {
+  const SCREEN_WIDTH = Dimensions.get("window").width;
   const [refreshing, setRefreshing] = useState(false);
-
+  const colorScheme = useColorScheme();
+  const loaddata = ['Item 1', 'Item 2', 'Item 3'];
   const {fetchVisitors, fetchQrCode, fetchEmployeeData, fetchCompanySetup,
-    authenticated, setAuthenticated, checkAuth
+    authenticated, setAuthenticated, checkAuth, isauth
   } = useContext(VeeContext);
  
-  useEffect(() => {
+  // useEffect(() => {
 
 
-    checkAuth();
-  }, []);
+  //   checkAuth();
+  // }, []);
   
+
+  useEffect(() => {
+    const navigateIfAuthenticated = async () => {
+      const myAuthStatus = await checkAuth();
+      console.log('myAuthStatus is', myAuthStatus);
+      if (!myAuthStatus) {
+        router.replace('onboarding');
+      } 
+      else if(myAuthStatus && !isauth){
+        router.replace('(auth)/welcomeback');
+      }
+    };
+
+    navigateIfAuthenticated();
+  }, [router, isauth]);
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-  
     fetchEmployeeData();
     fetchQrCode();
     fetchVisitors();
@@ -57,8 +77,104 @@ const Dashlayout = ({children}) => {
           }
           >
             <View style={styles.scrollgap}>
-  
-    {children}
+  {
+    isauth ? (
+      <>
+       {children} 
+      </>
+     
+      ) : 
+    
+    ( 
+      <>
+      {loaddata.map(ld => ( 
+      <ThemedView key={ld}  darkColor="#111111"
+                  style={[
+                      {
+                        borderColor: Colors[colorScheme ?? "light"].cardborderColor,
+                      },
+                      styles.mbx,
+                    ]} >
+          <ThemedView darkColor="transparent">
+            <ShimmerEffect
+              width={39}
+              height={30}
+              style={{
+                flexDirection: "row",
+                alignSelf: "flex-start",
+                height: 39,
+                width: 39,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 50,
+              }}
+            />
+          </ThemedView>
+          <ThemedView
+            darkColor="#111111"
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 3.2}
+              height={20}
+              style={styles.shimmer}
+            />
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 3}
+              height={20}
+              style={styles.shimmer}
+            />
+          </ThemedView>
+          <ThemedView
+            darkColor="#111111"
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 4}
+              height={20}
+              style={styles.shimmer}
+            />
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 3}
+              height={20}
+              style={styles.shimmer}
+            />
+          </ThemedView>
+          <ThemedView
+            darkColor="#111111"
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+            }}
+          >
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 4}
+              height={20}
+              style={styles.shimmer}
+            />
+            <ShimmerEffect
+              width={SCREEN_WIDTH / 3}
+              height={20}
+              style={styles.shimmer}
+            />
+          </ThemedView>
+        </ThemedView>))}
+
+
+
+      </>
+
+    )
+
+     
+  }
+    
 
       </View>
       </ScrollView>
@@ -130,6 +246,24 @@ const styles = StyleSheet.create({
               small:{
                 fontSize: 12,
                 fontFamily: 'OutfitLight'
-              }
+              },
+              mbx:{
+                padding: 11,
+                borderWidth: 1,
+                gap: 3,
+                paddingVertical: 17,
+                borderRadius: 10,
+                marginTop:15
+                    },
+              icon: {
+                backgroundColor: "transparent",
+                paddingVertical: 15,
+                paddingHorizontal: 14,
+                borderWidth: 1,
+                borderRadius: 9,
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+              },
         
 })
